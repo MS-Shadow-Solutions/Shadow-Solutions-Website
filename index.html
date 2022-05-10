@@ -1506,8 +1506,6 @@ Start Our Team
 						<form
 							id="contact-form"
 							method="post"
-							action="sendmail.php"
-							role="form"
 						>
 							<div class="form-group">
 								<input
@@ -1516,6 +1514,7 @@ Start Our Team
 									class="form-control"
 									name="name"
 									id="name"
+									required
 								/>
 							</div>
 
@@ -1526,6 +1525,20 @@ Start Our Team
 									class="form-control"
 									name="email"
 									id="email"
+									required
+								/>
+							</div>
+
+							<div class="form-group">
+								<input
+									type="text"
+									minlength="10"
+									maxlength="10"
+									placeholder="Your Mobile Number"
+									class="form-control"
+									name="mobile"
+									id="mobile"
+									required
 								/>
 							</div>
 
@@ -1536,6 +1549,7 @@ Start Our Team
 									class="form-control"
 									name="subject"
 									id="subject"
+									required
 								/>
 							</div>
 
@@ -1546,6 +1560,7 @@ Start Our Team
 									class="form-control"
 									name="message"
 									id="message"
+									required
 								></textarea>
 							</div>
 
@@ -1646,6 +1661,57 @@ Start Our Team
 		<!-- end footer -->
 
 		<!-- Essential Scripts -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js" integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+		<script>
+			function getCookie(name) {
+				let cookieValue = null;
+				if (document.cookie && document.cookie !== '') {
+					const cookies = document.cookie.split(';');
+					for (let i = 0; i < cookies.length; i++) {
+						const cookie = cookies[i].trim();
+						// Does this cookie string begin with the name we want?
+						if (cookie.substring(0, name.length + 1) === (name + '=')) {
+							cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+							break;
+						}
+					}
+				}
+				return cookieValue;
+			}
+			
+			const contact = async (e) => {
+				e.preventDefault();
+				const csrftoken = getCookie('csrftoken');
+				const name = document.getElementById('name').value;
+				const email = document.getElementById('email').value;
+				const mobile = document.getElementById('mobile').value;
+				const subject = document.getElementById('subject').value;
+				const message = document.getElementById('message').value;
+				const data = {
+					name,
+					email,
+					mobile,
+					subject,
+					message
+				};
+				const response = await axios.post(
+					'https://shadowsolutions.herokuapp.com/api/contact',
+					data,
+					{
+						headers: {
+							'X-CSRFToken': csrftoken
+						}
+					}
+				);
+				if (response.status === 200) {
+					alert('Message Sent Successfully');
+					window.location.href = '/';
+				}
+			};
+
+			const contactForm = document.getElementById('contact-form').addEventListener('submit', contact);
+		</script>
 
 		<!-- Main jQuery -->
 		<script
